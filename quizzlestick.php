@@ -88,7 +88,7 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 			add_action( 'wp_ajax_nopriv_quizzlestick_api', array( $this, 'api' ) );
 			
 			
-			add_filter( 'quizzlestick-quickfire-delay', array( $this, 'set_quiz_nextdelay' ), 10, 2 );
+			//add_filter( 'quizzlestick-quickfire-delay', array( $this, 'set_quiz_nextdelay' ), 10, 2 );
 			
 		}
 
@@ -140,10 +140,10 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 				}
 				
 				// But the js we *really* need to keep
-				$prefix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+				//$prefix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-				wp_register_script( 'quizzlestick', QUIZZLESTICK_URL . "/js/quizzlestick/quizzlestick{$prefix}.js", array( 'jquery' ) );
-				wp_register_script( 'quizzlestick-wp', QUIZZLESTICK_URL . "/js/quizzlestick-wp{$prefix}.js", array( 'quizzlestick' ) );
+				wp_register_script( 'quizzlestick', QUIZZLESTICK_URL . "/js/quizzlestick/quizzlestick.js", array( 'jquery' ) );
+				wp_register_script( 'quizzlestick-wp', QUIZZLESTICK_URL . "/js/quizzlestick-wp.js", array( 'quizzlestick' ) );
 				wp_localize_script( 'quizzlestick-wp', 'quizzlestickwp', array(
 					'ajaxurl' => admin_url( '/admin-ajax.php' ),
 					'nonce' => wp_create_nonce( 'quizzlestick' . AUTH_SALT )
@@ -243,9 +243,13 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 			extract( shortcode_atts( array(
 				'id' => false
 			), $atts ) );
-
-			if ( ! $id || false === ( $post = get_post( $id ) ) )
-				return '<!-- No Quiz ID supplied or failed to find quiz -->';
+			
+			if ( $id )
+				$post = get_post( $id );
+			
+			if ( !( $post && $post->post_type === 'quiz' ) ) {
+				return '<p>No Quiz ID supplied or failed to find quiz.</p>';
+			}
 
 			return $this->quiz( $post );
 		}
@@ -289,72 +293,69 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 			// handle type mapping
 			$type = $this->extract_meta( 'type', $meta );
 			$config[ 'type' ] = $type;
-			if ( in_array( $type, array( 'quickfire', 'single' ) ) ) {
+			if ( in_array( $type, array( /*'quickfire',*/ 'single' ) ) ) {
 				$config[ 'type' ] = 'single';
 			}
 
 			// additional config
 			switch( $type ) {
-				case 'quickfire':
-					$config[ 'classname' ] = 'quizzlestick-quickfire';
-					$config[ 'nextdelay' ] = apply_filters( 'quizzlestick-quickfire-delay', 500, $post->ID );
-					$config[ 'templates' ][ 'answer' ] = '
-						<li class="quizzlestick-answer">
-							<a href="#">
-								{{answer}}
-							</a>
-						</li>';
-					$config[ 'templates' ][ 'question' ] = '
-						<li class="quizzlestick-question">
-							{{question}}
-							<ul class="quizzlestick-answers">
-								{{answers}}
-							</ul>
-							{{templates.toolbar}}
-							<div class="quizzlestick-result quizzlestick-result-question quizzlestick-hidden"></div>
-						</li>';
-					break;
+				//case 'quickfire':
+				//	$config[ 'classname' ] = 'quizzlestick-quickfire';
+				//	$config[ 'nextdelay' ] = apply_filters( 'quizzlestick-quickfire-delay', 500, $post->ID );
+				//	$config[ 'templates' ][ 'answer' ] = '
+				//		<li class="quizzlestick-answer">
+				//			<a href="#">
+				//				{{answer}}
+				//			</a>
+				//		</li>';
+				//	$config[ 'templates' ][ 'question' ] = '
+				//		<li class="quizzlestick-question">
+				//			{{question}}
+				//			<ul class="quizzlestick-answers">
+				//				{{answers}}
+				//			</ul>
+				//			{{templates.toolbar}}
+				//			<div class="quizzlestick-result quizzlestick-result-question quizzlestick-hidden"></div>
+				//		</li>';
+				//	break;
 				case 'single':
-
-					break;
-				case 'multi':
 
 					break;
 				case 'which':
 
 					break;
-				case 'poll':
-					$config[ 'nextdelay' ] = apply_filters( 'quizzlestick-quickfire-delay', 750, $post->ID );
-					$config[ 'templates' ][ 'scaffold' ] = '
-						<div class="quizzlestick-description">
-							{{templates.description}}
-						</div>
-						<div class="quizzlestick-timer">
-							{{templates.timer}}
-						</div>
-						<div class="quizzlestick-start-screen">
-							{{templates.timerstart}}
-						</div>
-						<ol class="quizzlestick-questions">
-							{{templates.questions}}
-						</ol>
-						{{templates.toolbar}}
-						<div class="quizzlestick-result quizzlestick-result-final quizzlestick-hidden">
-							{{templates.result}}
-						</div>';
-					$config[ 'templates' ][ 'answer' ] = '
-						<li class="quizzlestick-answer">
-							<a href="#">
-								{{answer}}
-							</a>
-							<span class="quizzlestick-answer-total">{{total}}</span>
-						</li>';
-					break;
+				//case 'poll':
+				//	$config[ 'nextdelay' ] = apply_filters( 'quizzlestick-quickfire-delay', 750, $post->ID );
+				//	$config[ 'templates' ][ 'scaffold' ] = '
+				//		<div class="quizzlestick-description">
+				//			{{templates.description}}
+				//		</div>
+				//		<div class="quizzlestick-timer">
+				//			{{templates.timer}}
+				//		</div>
+				//		<div class="quizzlestick-start-screen">
+				//			{{templates.timerstart}}
+				//		</div>
+				//		<ol class="quizzlestick-questions">
+				//			{{templates.questions}}
+				//		</ol>
+				//		{{templates.toolbar}}
+				//		<div class="quizzlestick-result quizzlestick-result-final quizzlestick-hidden">
+				//			{{templates.result}}
+				//		</div>';
+				//	$config[ 'templates' ][ 'answer' ] = '
+				//		<li class="quizzlestick-answer">
+				//			<a href="#">
+				//				{{answer}}
+				//			</a>
+				//			<span class="quizzlestick-answer-total">{{total}}</span>
+				//		</li>';
+				//	break;
 			}
 
 			// get general config
 			$config[ 'description' ] = apply_filters( 'the_content', $post->post_excerpt );
-			$config[ 'timelimit' ] 	 = intval( $this->extract_meta( 'timelimit', $meta ) );
+			//$config[ 'timelimit' ] 	 = intval( $this->extract_meta( 'timelimit', $meta ) );
 
 			// process questions and answers
 			$questions = array();
@@ -391,8 +392,8 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 						if ( $total )
 							$answer[ 'total' ] = $total;
 
-						if ( $type === 'poll' )
-							$answer[ 'correct' ] = false;
+						//if ( $type === 'poll' )
+						//	$answer[ 'correct' ] = false;
 
 						$answer[ 'answer' ] = apply_filters( 'quizzlestick_answer', $answer[ 'answer' ], $answer, $config, $post );
 					}
@@ -407,9 +408,9 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 					}
 
 					// edit question result template?
-					if ( $type === 'poll' ) {
-
-					}
+					//if ( $type === 'poll' ) {
+					//
+					//}
 
 					// filter question
 					$question[ 'question' ] = apply_filters( 'quizzlestick_question',  $question[ 'question' ], $question, $config, $post );
@@ -483,53 +484,54 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 				$config[ 'results' ] 	= $results;
 				
 			} elseif ( is_string( $result_description ) ) {
+				
 				// Add in the parts here
 				if( !empty( $result_introduction ) ) {
 					$template = '<div class="quizzlestick-result-intro">' . $result_introduction . '</div> ';
 				} else {
 					$template = "";
 				}
-				if( $type != 'which' && $type != 'poll' ) {
+				if( $type != 'which' /*&& $type != 'poll'*/ ) {
 					$template .= '<div class="quizzlestick-result-score"><span class="heading">' . $result_heading .  '</span><span class="numeric-results"><span class="score">{{state.points}}</span>/<span class="total">{{state.maxpoints}}</span></span></div>';
 				}
 				
-				if( $type == 'poll' ) {
-					$pollquestions = get_post_meta( $post->ID, 'questions', true );
-					if( isset( $pollquestions[0]['answers'] ) && !empty( $pollquestions[0]['answers'] ) ) {
-						$pollanswers = array();
-						foreach( $pollquestions[0]['answers'] as $key => $pollanswer ) {
-							$pollresult = get_post_meta( $post->ID, 'total_0_' . $key, true );
-							$pollresults[$key] = ( !empty($pollresult) ) ? $pollresult : 0;
-						}
-						
-						$totalresults = array_sum( $pollresults );
-						
-						$template .= '<div class="quizzlestick-result-score quizzlestick-poll-results" data-total="' . $totalresults . '">';
-						if( $totalresults == 0) $totalresults = 1; // removes divide by zero below
-						// And now loop again
-						foreach( $pollquestions[0]['answers'] as $key => $pollanswer ) {
-							
-							$template .= '<div class="quizzlestick-poll-result-answer" id="quizzlestick-poll-result-answer-' . $key . '">';
-							$template .= '<span class="answer-title">' . strip_tags( $pollanswer['answer'] ) . '</span>';
-							$template .= '<div class="answer-bar-holder" id="answer-bar-holder-' . $key . '">';
-								$template .= '<div class="answer-bar" data-total="' . $pollresults[$key] . '" data-percentagetotal="' . (int)( (100 / $totalresults) * (int)$pollresults[$key] ) . '" style="width: ' . (int)( (100 / $totalresults) * (int)$pollresults[$key] ) . '%;">';
-								$template .= '</div>';
-								$template .= '<span class="answer-value" id="answer-value-' . $key . '">' . (int)( (100 / $totalresults) * (int)$pollresults[$key] ) . '%</span>';
-							$template .= '</div>';
-							$template .= '</div>';
-							
-						}
-						$template .= '</div>';
-						
-					}
-					
-				}
+				//if( $type == 'poll' ) {
+				//	$pollquestions = get_post_meta( $post->ID, 'questions', true );
+				//	if( isset( $pollquestions[0]['answers'] ) && !empty( $pollquestions[0]['answers'] ) ) {
+				//		$pollanswers = array();
+				//		foreach( $pollquestions[0]['answers'] as $key => $pollanswer ) {
+				//			$pollresult = get_post_meta( $post->ID, 'total_0_' . $key, true );
+				//			$pollresults[$key] = ( !empty($pollresult) ) ? $pollresult : 0;
+				//		}
+				//		
+				//		$totalresults = array_sum( $pollresults );
+				//		
+				//		$template .= '<div class="quizzlestick-result-score quizzlestick-poll-results" data-total="' . $totalresults . '">';
+				//		if( $totalresults == 0) $totalresults = 1; // removes divide by zero below
+				//		// And now loop again
+				//		foreach( $pollquestions[0]['answers'] as $key => $pollanswer ) {
+				//			
+				//			$template .= '<div class="quizzlestick-poll-result-answer" id="quizzlestick-poll-result-answer-' . $key . '">';
+				//			$template .= '<span class="answer-title">' . strip_tags( $pollanswer['answer'] ) . '</span>';
+				//			$template .= '<div class="answer-bar-holder" id="answer-bar-holder-' . $key . '">';
+				//				$template .= '<div class="answer-bar" data-total="' . $pollresults[$key] . '" data-percentagetotal="' . (int)( (100 / $totalresults) * (int)$pollresults[$key] ) . '" style="width: ' . (int)( (100 / $totalresults) * (int)$pollresults[$key] ) . '%;">';
+				//				$template .= '</div>';
+				//				$template .= '<span class="answer-value" id="answer-value-' . $key . '">' . (int)( (100 / $totalresults) * (int)$pollresults[$key] ) . '%</span>';
+				//			$template .= '</div>';
+				//			$template .= '</div>';
+				//			
+				//		}
+				//		$template .= '</div>';
+				//		
+				//	}
+				//}
 				
 				if( !empty( $result_description ) ) {
 					$template .= '<div class="quizzlestick-result-description">' . $result_description . '</div>';
 				}
 				
 				$config[ 'results' ] 	= $template;
+				
 			}
 
 			// templates
@@ -596,15 +598,18 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 			add_meta_box( 'results', __( 'Results' ), array( $this, 'meta_box_results' ), $this->post_type, 'normal', 'default' );
 			
 			// Add in our poll results metabox
-			if( $type == 'poll' ) {
-				add_meta_box( 'pollresults', __( 'Poll Results' ), array( $this, 'meta_box_poll_results' ), $this->post_type, 'normal', 'default' );
-			}
+			//if( $type == 'poll' ) {
+			//	add_meta_box( 'pollresults', __( 'Poll Results' ), array( $this, 'meta_box_poll_results' ), $this->post_type, 'normal', 'default' );
+			//}
 			
 			// embed box
 			add_meta_box( 'embed', __( 'Embed' ), array( $this, 'meta_box_embed' ), $this->post_type, 'side', 'default' );
 
 			// remove excerpt box
 			remove_meta_box( 'postexcerpt', $this->post_type, 'normal' );
+			
+			// remove featured image box
+			remove_meta_box( 'postimagediv', $this->post_type, 'side' );
 			
 
 		}
@@ -641,11 +646,11 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 						'name' => 'type',
 						'value' => $type,
 						'options' => apply_filters( 'quizzlestick_question_types', array(
-							'quickfire' => __( 'Quickfire' ),
-							'single' => __( 'Single Answer' ),
-							//'multi' => __( 'Multiple Answers' ),
-							'which' => __( 'Which are you / is it?' ),
-							'poll' => __( 'Poll' )
+							//'quickfire' => __( 'Quickfire <span class="description"> quizzes submit answers immediately on click and automatically progress to the next question if available.</span><br /><br />' ),
+							'single' => __( 'Single Answer <span class="description"> quizzes submit answers immediately on click and show the question result and a \'next\' button.</span><br /><br />' ),
+							//'multi' => __( 'Multiple Answers <span class="description"> quizzes can have more than one correct answer per question which all have to be selected to get the question right.</span><br /><br />' ),
+							'which' => __( 'Which are you / is it? <span class="description"> quizzes have no incorrect answers but must use graduated results based on the points scored.</span><br /><br />' ),
+							//'poll' => __( 'Poll <span class="description"> are a single questions the results of which are shown immediately after.</span>' )
 							) ),
 						'description' => __( 'Choose the type of quiz' ),
 						'default' => 'single'
@@ -670,9 +675,9 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 						'name' => 'excerpt',
 						'value' => html_entity_decode( $post->post_excerpt ),
 						'description' => '<p>' . __( 'If the quiz needs an introduction or instructions add them here' ) . '</p>',
-						'tiny_mce' => false,
+						'tiny_mce' => true,
 						'edit_args' => array(
-							'media_buttons' => true,
+							'media_buttons' => false,
 							'teeny' => true,
 							'textarea_rows' => 2,
 							'wpautop' => true
@@ -685,45 +690,45 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 
 					if( !apply_filters( 'quizzlestick_enable_timelime', false ) ) {
 						echo '<input type="hidden" name="timelimit" value="0" />';
-					} else {
-						if ( $type !== 'poll' ) {
-							echo '
-							<tr class="quiz-field quiz-field-number">
-								<th><label>' . __( 'Time limit (seconds)' ) . '</label></th>
-								<td>';
-
-							icit_fields::field_numeric( array(
-								'name' => 'timelimit',
-								'value' => get_post_meta( $post->ID, 'timelimit', true ),
-								'description' => __( 'The time limit for this quiz in seconds. Zero means there is no time limit.' ),
-								'default' => 0,
-								'min' => 0
-							) );
-
-							echo '
-								</td>
-							</tr>';
-						}
-					}
-										
-					if ( $type == 'quickfire' ) {
-						echo '
-						<tr class="quiz-field quiz-field-number">
-							<th><label>' . __( 'Delay before next question (miliseconds)' ) . '</label></th>
-							<td>';
-
-						icit_fields::field_numeric( array(
-							'name' => 'nextdelay',
-							'value' => get_post_meta( $post->ID, 'nextdelay', true ),
-							'description' => __( 'The delay before moving to the next question after answering default is 500 miliseconds.' ),
-							'default' => 500,
-							'min' => 0
-						) );
-
-						echo '
-							</td>
-						</tr>';
-					}
+					} //else {
+						//if ( $type !== 'poll' ) {
+							//echo '
+							//<tr class="quiz-field quiz-field-number">
+							//	<th><label>' . __( 'Time limit (seconds)' ) . '</label></th>
+							//	<td>';
+							//
+							//icit_fields::field_numeric( array(
+							//	'name' => 'timelimit',
+							//	'value' => get_post_meta( $post->ID, 'timelimit', true ),
+							//	'description' => __( 'The time limit for this quiz in seconds. Zero means there is no time limit.' ),
+							//	'default' => 0,
+							//	'min' => 0
+							//) );
+							//
+							//echo '
+							//	</td>
+							//</tr>';
+						//}
+					//}
+					
+					//if ( $type == 'quickfire' ) {
+					//	echo '
+					//	<tr class="quiz-field quiz-field-number">
+					//		<th><label>' . __( 'Delay before next question (miliseconds)' ) . '</label></th>
+					//		<td>';
+					//
+					//	icit_fields::field_numeric( array(
+					//		'name' => 'nextdelay',
+					//		'value' => get_post_meta( $post->ID, 'nextdelay', true ),
+					//		'description' => __( 'The delay before moving to the next question after answering default is 500 miliseconds.' ),
+					//		'default' => 500,
+					//		'min' => 0
+					//	) );
+					//
+					//	echo '
+					//		</td>
+					//	</tr>';
+					//}
 
 					//echo '
 					//<tr class="quiz-field quiz-field-number">
@@ -742,7 +747,7 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 					//	</td>
 					//</tr>';
 
-					if ( ! in_array( $type, array( 'which', 'poll' ) ) ) {
+					if ( ! in_array( $type, array( 'which'/*, 'poll'*/ ) ) ) {
 
 						echo '
 						<tr class="quiz-field quiz-field-number">
@@ -784,7 +789,7 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 				</tbody>
 			</table>';
 
-			//echo '<p><input type="submit" class="button button-primary" name="updatesettings" value="' . __( 'Update settings' ) . '" /></p>';
+			echo '<p><input type="submit" class="button button-primary" name="updatesettings" value="' . __( 'Update settings' ) . '" /></p>';
 
 		}
 
@@ -810,8 +815,8 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 					$qid = $i;
 
 				// only 1 question for polls
-				if ( $quiz_type === 'poll' && $i > 0 )
-					break;
+				//if ( $quiz_type === 'poll' && $i > 0 )
+				//	break;
 
 				$question = wp_parse_args( $question, array(
 					'question' => '',
@@ -849,7 +854,7 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 								</td>
 							</tr>';
 
-					if ( ! in_array( $quiz_type, array( 'which', 'poll' ) ) ) {
+					if ( ! in_array( $quiz_type, array( 'which'/*, 'poll'*/ ) ) ) {
 
 					echo '
 							<tr>
@@ -960,30 +965,30 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 							
 							do_action( 'quizzlestick_answers_postimage', $i, $j, $question, "questions[$i][answers][$j][answer]", $post );
 									
-							if( $quiz_type == 'poll' ) {
-								
-								echo '
-										<tr>
-											<th><label>' . __( 'Long Answer' ) . '</label><br /> <span class="description">' . __( 'For a longer, more complete answer' ) . '</span></th>
-											<td>';
-			
-											icit_fields::field_textarea( array(
-												'name' => "answer_{$j}_answer_description",
-												'value' => $question[ 'answers' ][$j]['description'],
-												'tiny_mce' => $i !== '__i__',
-												'edit_args' => array(
-													'media_buttons' => false,
-													'teeny' => true,
-													'textarea_rows' => 4,
-													'wpautop' => true
-												)
-											) );
-			
-								echo '
-											</td>
-										</tr>';
-								
-							} else {
+							//if( $quiz_type == 'poll' ) {
+							//	
+							//	echo '
+							//			<tr>
+							//				<th><label>' . __( 'Long Answer' ) . '</label><br /> <span class="description">' . __( 'For a longer, more complete answer' ) . '</span></th>
+							//				<td>';
+							//
+							//				icit_fields::field_textarea( array(
+							//					'name' => "answer_{$j}_answer_description",
+							//					'value' => $question[ 'answers' ][$j]['description'],
+							//					'tiny_mce' => $i !== '__i__',
+							//					'edit_args' => array(
+							//						'media_buttons' => false,
+							//						'teeny' => true,
+							//						'textarea_rows' => 4,
+							//						'wpautop' => true
+							//					)
+							//				) );
+							//
+							//	echo '
+							//				</td>
+							//			</tr>';
+							//	
+							//} else {
 								if ( $quiz_type !== 'which' ) {
 									echo '
 										<tr>
@@ -1004,12 +1009,13 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 										<td>';
 								icit_fields::field_numeric( array(
 									'name' => "questions[$i][answers][$j][points]",
+									'min' => 0,
 									'value' => $answer[ 'points' ]
 								) );
 								echo '
 										</td>
 									</tr>';
-							}
+							//}
 
 							echo '
 								</tbody>
@@ -1039,7 +1045,7 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 
 			}
 
-			if ( $quiz_type !== 'poll' )
+			//if ( $quiz_type !== 'poll' )
 				echo '<p><input type="submit" name="addquestion" class="button" value="' . __( 'Add another question' ) . '" data-qid="' . $qid . '" /></p>';
 
 		}
@@ -1047,13 +1053,13 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 		public function meta_box_poll_results( WP_Post $post, $meta_box ) {
 			
 			$quiz_type = get_post_meta( $post->ID, 'type', true );
-
+		
 			echo '
 			<table class="form-table">
 				<tbody>';
 				
 			$questions = get_post_meta( $post->ID, 'questions', true );
-
+		
 			if ( empty( $questions ) ) {
 				_e( 'Coming Soon' );
 			} else {
@@ -1116,7 +1122,7 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 				<tbody>';
 
 			// results if not a poll type
-			if ( $quiz_type !== 'poll' ) {
+			//if ( $quiz_type !== 'poll' ) {
 				
 				$result_title = get_post_meta( $post->ID, 'result_title', true );
 				echo '
@@ -1139,16 +1145,10 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 							<th><label>' . __( 'Results introduction (default)' ) . '</label><br/><span class="description">' . __( 'This is shown below the title and can be overridden by any Introduction text set in graduated results (below)' ) . '</span></th>
 							<td>';
 							$result_introduction = get_post_meta( $post->ID, 'result_introduction', true );
-							icit_fields::field_textarea( array(
+							icit_fields::field_text( array(
 								'name' => 'result_introduction',
 								'value' => $result_introduction ? $result_introduction : '<p>' . __( 'Here are your results' ) . '</p>',
-								'tiny_mce' => false,
-								'edit_args' => array(
-									'media_buttons' => false,
-									'teeny' => false,
-									'textarea_rows' => 2,
-									'wpautop' => true
-								),
+								'class' => 'widefat',
 								'default' => 'Here are your results'
 							) );
 				echo '
@@ -1171,7 +1171,6 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 					echo '
 								</td>
 							</tr>';
-				} else {
 				}
 			
 				// Default base text
@@ -1299,7 +1298,7 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 					icit_fields::field_textarea( array(
 						'name' => "results_{$i}_result",
 						'value' => $result[ 'result' ],
-						'tiny_mce' => $i !== '__i__',
+						'tiny_mce' => $i !== '__i__' ? true : false,
 						'edit_args' => array(
 							'media_buttons' => false,
 							'teeny' => true,
@@ -1333,65 +1332,65 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 						</tr>';
 
 			// poll results
-			} else {
-
-				$result_title = get_post_meta( $post->ID, 'result_title', true );
-				echo '
-						<tr>
-							<th><label>' . __( 'Results title' ) . '</label><br/><span class="description">' . __( 'This is the text shown at the very top of the results panel' ) . '</span></th>
-							<td>';
-							icit_fields::field_text( array(
-								'name' => "result_title",
-								'value' => $result_title ? $result_title : 'Thank you',
-								'class' => 'widefat',
-								'default' => 'Thank you'
-							) );
-				echo '
-							</td>
-						</tr>';
-
-				// result text or intro result text
-				echo '
-						<tr class="quiz-result-default">
-							<th><label>' . __( 'Results introduction (default)' ) . '</label><br/><span class="description">' . __( 'This is shown below the title' ) . '</span></th>
-							<td>';
-							$result_introduction = get_post_meta( $post->ID, 'result_introduction', true );
-							icit_fields::field_textarea( array(
-								'name' => 'result_introduction',
-								'value' => $result_introduction ? $result_introduction : '<p>' . __( 'Here are the current results' ) . '</p>',
-								'tiny_mce' => false,
-								'edit_args' => array(
-									'media_buttons' => false,
-									'teeny' => false,
-									'textarea_rows' => 2,
-									'wpautop' => true
-								),
-								'default' => 'Here are the current results'
-							) );
-				echo '
-							</td>
-						</tr>';
-						
-				// Default base text
-				echo '
-						<tr class="quiz-result-default">
-							<th><label>' . __( 'Results text (default)' ) . '</label><br/><span class="description">' . __( 'This is displayed underneath the results panel' ) . '</span></th>
-							<td>';
-							$result = get_post_meta( $post->ID, 'result', true );
-							icit_fields::field_textarea( array(
-								'name' => 'result',
-								'value' => $result ? $result : '<p>' . __( 'Please come back and be a part of our polls in the future.' ) . '</p>',
-								'tiny_mce' => true,
-								'edit_args' => array(
-									'media_buttons' => true,
-									'teeny' => true,
-									'textarea_rows' => 2,
-									'wpautop' => true
-								),
-								'default' => '<p>Please come back and be a part of our polls in the future.</p>'
-							) );
-
-			}
+			//} else {
+			//
+			//	$result_title = get_post_meta( $post->ID, 'result_title', true );
+			//	echo '
+			//			<tr>
+			//				<th><label>' . __( 'Results title' ) . '</label><br/><span class="description">' . __( 'This is the text shown at the very top of the results panel' ) . '</span></th>
+			//				<td>';
+			//				icit_fields::field_text( array(
+			//					'name' => "result_title",
+			//					'value' => $result_title ? $result_title : 'Thank you',
+			//					'class' => 'widefat',
+			//					'default' => 'Thank you'
+			//				) );
+			//	echo '
+			//				</td>
+			//			</tr>';
+			//
+			//	// result text or intro result text
+			//	echo '
+			//			<tr class="quiz-result-default">
+			//				<th><label>' . __( 'Results introduction (default)' ) . '</label><br/><span class="description">' . __( 'This is shown below the title' ) . '</span></th>
+			//				<td>';
+			//				$result_introduction = get_post_meta( $post->ID, 'result_introduction', true );
+			//				icit_fields::field_textarea( array(
+			//					'name' => 'result_introduction',
+			//					'value' => $result_introduction ? $result_introduction : '<p>' . __( 'Here are the current results' ) . '</p>',
+			//					'tiny_mce' => false,
+			//					'edit_args' => array(
+			//						'media_buttons' => false,
+			//						'teeny' => false,
+			//						'textarea_rows' => 2,
+			//						'wpautop' => true
+			//					),
+			//					'default' => 'Here are the current results'
+			//				) );
+			//	echo '
+			//				</td>
+			//			</tr>';
+			//			
+			//	// Default base text
+			//	echo '
+			//			<tr class="quiz-result-default">
+			//				<th><label>' . __( 'Results text (default)' ) . '</label><br/><span class="description">' . __( 'This is displayed underneath the results panel' ) . '</span></th>
+			//				<td>';
+			//				$result = get_post_meta( $post->ID, 'result', true );
+			//				icit_fields::field_textarea( array(
+			//					'name' => 'result',
+			//					'value' => $result ? $result : '<p>' . __( 'Please come back and be a part of our polls in the future.' ) . '</p>',
+			//					'tiny_mce' => true,
+			//					'edit_args' => array(
+			//						'media_buttons' => true,
+			//						'teeny' => true,
+			//						'textarea_rows' => 2,
+			//						'wpautop' => true
+			//					),
+			//					'default' => '<p>Please come back and be a part of our polls in the future.</p>'
+			//				) );
+			//
+			//}
 
 			echo '
 				</tbody>
@@ -1423,8 +1422,8 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 			// settings
 			if ( isset( $_POST[ 'type' ] ) )
 				update_post_meta( $post_id, 'type', icit_fields::validate_text( $_POST[ 'type' ] ) );
-			if ( isset( $_POST[ 'timelimit' ] ) )
-				update_post_meta( $post_id, 'timelimit', icit_fields::validate_numeric( $_POST[ 'timelimit' ] ) );
+			//if ( isset( $_POST[ 'timelimit' ] ) )
+			//	update_post_meta( $post_id, 'timelimit', icit_fields::validate_numeric( $_POST[ 'timelimit' ] ) );
 			if ( isset( $_POST[ 'nextdelay' ] ) )
 				update_post_meta( $post_id, 'nextdelay', icit_fields::validate_numeric( $_POST[ 'nextdelay' ] ) );
 			if ( isset( $_POST[ 'correct' ] ) )

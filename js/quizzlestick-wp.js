@@ -7,9 +7,9 @@
 			obj.qsaction = obj.action;
 
 			// only post polls or completions
-			if ( obj.qsaction !== 'complete' ) {
-				return;
-			}
+			//if ( obj.qsaction !== 'complete' ) {
+			//	return;
+			//}
 
 			// add nonce
 			obj = $.extend( true, obj, {

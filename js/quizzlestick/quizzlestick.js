@@ -181,35 +181,32 @@
 												qresult.append( quiz.fumanchu( adata.resultcorrect, adata ) );
 										}
 										
-									} else if ( config.type !== 'poll' ) {
+									} else {
 
 										// incorrect answer styling
 										answer.addClass( 'quizzlestick-incorrect' );
-
+										
 										// show incorrect result
 										if ( adata.resultincorrect )
 											qresult.append( quiz.fumanchu( adata.resultincorrect, adata ) );
 
-									} else {
-										answer.addClass( 'quizzlestick-correct' );
-										console.log( 'running a poll?' );
 									}
 								} );
 
 								// is it correct
-								if ( config.type === 'multi' )
-									correct = config.state.answers[ questionid ].sort().join('') == qdata.correct.sort().join('');
-								else
+								//if ( config.type === 'multi' )
+								//	correct = config.state.answers[ questionid ].sort().join('') == qdata.correct.sort().join('');
+								//else
 									correct = $.grep( qdata.correct, function( aid ) { return $.inArray( aid, config.state.answers[ questionid ] ) > -1; } ).length;
 
 								// show correct answers
 								answers.each( function() {
-									if ( $.inArray( $( this ).data( 'id' ), qdata.correct ) >= 0 && config.type !== 'which' && config.type !== 'poll' )
+									if ( $.inArray( $( this ).data( 'id' ), qdata.correct ) >= 0 && config.type !== 'which' /*&& config.type !== 'poll'*/ )
 										$( this ).addClass( 'quizzlestick-correct' );
 								} );
 
 								// is this a quiz
-								if ( config.type === 'single' || config.type === 'multi' ) {
+								if ( config.type === 'single'/* || config.type === 'multi'*/ ) {
 
 									// are we correct?
 									if ( correct ) {
@@ -262,7 +259,7 @@
 									
 
 								// polls update answer template
-								} else if ( config.type === 'poll' ) {
+								}/* else if ( config.type === 'poll' ) {
 
 									// update answer templates before parsing
 									$.each( qdata.answers, function( a, answer ) {
@@ -281,10 +278,10 @@
 									finish			= quiz.find( '.quizzlestick-finish' ).eq( 0 );
 									
 									
-								}
+								}*/
 
 								// show result text if any
-								if ( $.trim( qresult.html() ) !== '' && (config.type !== 'which' && config.type !== 'poll') ) {remo
+								if ( $.trim( qresult.html() ) !== '' && (config.type !== 'which'/* && config.type !== 'poll'*/) ) {
 									qresult.removeClass( 'quizzlestick-hidden' );
 								}
 
@@ -306,9 +303,9 @@
 								// end game if everything has been answered
 								if ( config.helpers.numanswers( {}, config ) >= questions.length ) {
 									
-									if( config.type == 'poll' ) {
-										// We want to auto-complete polls regardless
-									}
+									//if( config.type == 'poll' ) {
+									//	// We want to auto-complete polls regardless
+									//}
 									
 									// Tweaks
 									//finish.click();
@@ -456,21 +453,21 @@
 							question.prev().addClass( 'quizzlestick-question-prev' );
 
 							// multi choice game
-							if ( config.type === 'multi' ) {
-
-								// selection indicator
-								answer.toggleClass( 'quizzlestick-selected' );
-
-								// show check answer box
-								if ( answers.filter( '.quizzlestick-selected' ).length )
-									check.removeClass( 'quizzlestick-hidden quizzlestick-disabled' );
-								else
-									check.addClass( 'quizzlestick-disabled' );
-
-							}
+							//if ( config.type === 'multi' ) {
+							//
+							//	// selection indicator
+							//	answer.toggleClass( 'quizzlestick-selected' );
+							//
+							//	// show check answer box
+							//	if ( answers.filter( '.quizzlestick-selected' ).length )
+							//		check.removeClass( 'quizzlestick-hidden quizzlestick-disabled' );
+							//	else
+							//		check.addClass( 'quizzlestick-disabled' );
+							//
+							//}
 
 							// single choice game
-							if ( config.type === 'single' || config.type === 'poll' || config.type === 'which' ) {
+							if ( config.type === 'single' /*|| config.type === 'poll'*/ || config.type === 'which' ) {
 
 								// selection indicator
 								answer.addClass( 'quizzlestick-selected' );
@@ -522,23 +519,23 @@
 									.show()
 									.removeClass( 'quizzlestick-hidden' );
 
-									if( config.type == 'poll' ) {
-										pollanswer = config.state.answers[0][0];
-										// Increase grand total
-										var grandtotal = $( this ).parents( '.quizzlestick-poll' ).find( '.quizzlestick-poll-results' ).data( 'total' );
-										$( this ).parents( '.quizzlestick-poll' ).find( '.quizzlestick-poll-results' ).data( 'total', ++grandtotal );
-										// Increase local total
-										var localtotal = $(this).parents( '.quizzlestick-poll' ).find( '#answer-bar-holder-' + pollanswer + ' .answer-bar' ).data( 'total' );
-										
-										$(this).parents( '.quizzlestick-poll' ).find( '#answer-bar-holder-' + pollanswer + ' .answer-bar' ).data( 'total', ++localtotal );
-									
-										// Recaluculate displays
-										$(this).parents( '.quizzlestick-poll' ).find( '.answer-bar' ).each( function() {
-											var percentage = parseInt( (100 / grandtotal ) * $( this ).data( 'total') );
-											$( this ).data( 'percentagetotal', percentage ).css( 'width', percentage + '%' );
-											$( this ).siblings( '.answer-value' ).html( percentage + '%' );
-										} );  
-									}
+									//if( config.type == 'poll' ) {
+									//	pollanswer = config.state.answers[0][0];
+									//	// Increase grand total
+									//	var grandtotal = $( this ).parents( '.quizzlestick-poll' ).find( '.quizzlestick-poll-results' ).data( 'total' );
+									//	$( this ).parents( '.quizzlestick-poll' ).find( '.quizzlestick-poll-results' ).data( 'total', ++grandtotal );
+									//	// Increase local total
+									//	var localtotal = $(this).parents( '.quizzlestick-poll' ).find( '#answer-bar-holder-' + pollanswer + ' .answer-bar' ).data( 'total' );
+									//	
+									//	$(this).parents( '.quizzlestick-poll' ).find( '#answer-bar-holder-' + pollanswer + ' .answer-bar' ).data( 'total', ++localtotal );
+									//
+									//	// Recaluculate displays
+									//	$(this).parents( '.quizzlestick-poll' ).find( '.answer-bar' ).each( function() {
+									//		var percentage = parseInt( (100 / grandtotal ) * $( this ).data( 'total') );
+									//		$( this ).data( 'percentagetotal', percentage ).css( 'width', percentage + '%' );
+									//		$( this ).siblings( '.answer-value' ).html( percentage + '%' );
+									//	} );  
+									//}
 									
 									// get poll result - remove the results for now
 									//qresult.append( quiz.fumanchu( config.templates.pollresults, qdata, config ) );
@@ -589,15 +586,15 @@
 								answer.correct = true;
 
 							// no correct answer if it's a poll
-							if ( config.type === 'poll' ) {
-								answer.correct = false;
-								answer.points = 0;
-							}
+							//if ( config.type === 'poll' ) {
+							//	answer.correct = false;
+							//	answer.points = 0;
+							//}
 
 							// add flag incase multiple right answers
 							if ( answer.correct ) {
 								question.correct.push( a );
-								config.state.poll = false;
+								//config.state.poll = false;
 							}
 
 							// default correct answers to 1 point
@@ -605,8 +602,8 @@
 								answer.points = 1;
 
 							// update maxpoints
-							if ( config.type === 'multi' && answer.correct )
-								config.state.maxpoints += parseInt( answer.points, 10 );
+							//if ( config.type === 'multi' && answer.correct )
+							//	config.state.maxpoints += parseInt( answer.points, 10 );
 							if ( ( config.type === 'single' || config.type === 'which' ) && answer.points > highest )
 								highest = parseInt( answer.points, 10 );
 
@@ -624,8 +621,8 @@
 					} );
 
 					// its not a poll if it's possible to score any points
-					if ( config.state.maxpoints > 0 )
-						config.state.poll = false;
+					//if ( config.state.maxpoints > 0 )
+					//	config.state.poll = false;
 
 					// init state
 					if ( config.questions ) {
@@ -686,7 +683,7 @@
 						}
 
 						// if single answer hide check answer
-						if ( config.type !== 'multi' )
+						if ( config.type === 'single' || 'which' )
 							quiz.find( '.quizzlestick-check' ).hide();
 
 						// if a which are you game add a nextdelay if not set
@@ -779,8 +776,8 @@
 			time: 0,
 			points: 0,
 			maxpoints: 0,
-			answers: {},
-			poll: true 		// if any answers are marked as correct this is set to false
+			answers: {}
+			//poll: true 		// if any answers are marked as correct this is set to false
 		},
 
 		// if true then players must answer questions before progressing
@@ -942,17 +939,17 @@
 					<a href="#">{{answer}}</a>\
 				</li>\
 			',
-			pollresults: '\
-				<div class="quizzlestick-poll-results">\
-					{{answers}}\
-				</div>\
-			',
-			pollresult: '\
-				<div class="quizzlestick-poll-result">\
-					{{answer}}\
-					<div class="quizzlestick-poll-result-bar" style="width:{{helpers.answerwidth}}%;"><span>{{total}}</span></div>\
-				</div>\
-			',
+			//pollresults: '\
+			//	<div class="quizzlestick-poll-results">\
+			//		{{answers}}\
+			//	</div>\
+			//',
+			//pollresult: '\
+			//	<div class="quizzlestick-poll-result">\
+			//		{{answer}}\
+			//		<div class="quizzlestick-poll-result-bar" style="width:{{helpers.answerwidth}}%;"><span>{{total}}</span></div>\
+			//	</div>\
+			//',
 			toolbar: '\
 				<div class="quizzlestick-toolbar">\
 					<a class="quizzlestick-check quizzlestick-hidden" href="#">Check answer</a>\
