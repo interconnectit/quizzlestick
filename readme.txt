@@ -1,12 +1,12 @@
 === Quizzlestick ===
 
-Contributors:      interconnectit
-Tags:              quiz, plugins
+Contributors: interconnectit
+Tags: quiz, plugins
 Requires at least: 4.0
-Tested up to:      4.1.1
-Stable tag:        1.0
-License:           GPLv2 or later
-License URI:       http://www.gnu.org/licenses/gpl-2.0.html
+Tested up to: 4.1.1
+Stable tag: 1.0
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Create quizzes test your visitors!
 
@@ -17,7 +17,7 @@ Use Quizzlestick to create quizzes to question your users and test their knowled
 Create one of two types of quizzes to test your visitors:
 
 * Single Answer - Choose your single answer from a multiple choice question.
-* Which Are You / Is It? - A series of questions  to find out about you.
+* Which Are You / Is It? - A series of questions to find out about you.
 
 The other options available include setting a description for the quiz, time limit, and correct and incorrect answer text.
 You can choose how many points each answer is worth including negative values for making the quiz extra difficult.
@@ -33,9 +33,16 @@ To install Quizzlestick:
 
 A new item will appear in the dashboard menu for Quizzes which will allow you to create and manage your quizzes.
 
+== Screenshots ==
+
+1. Back end settings for the quiz
+
+2. Front end interface
+
 == Frequently Asked Questions ==
 
-
+= Is there any limit to the number of quizzes I can create?=
+As quizzes are a post type, there is no limit to the number of quizzes and they will be displayed in the same way your posts are!
 
 == Changelog ==
 
