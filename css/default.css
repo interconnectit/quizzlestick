@@ -138,6 +138,7 @@ ol.quizzlestick-questions {
 .quizzlestick-answer a {
 	background: #eee;
 	border-radius: 999px;
+	border: none;
 	color: #333;
 	display: block;
 	margin: 0 10px;
@@ -146,7 +147,7 @@ ol.quizzlestick-questions {
 	-webkit-transition: background .3s linear;
 }
 
-.quizzlestick-answer a:link { background: #ddd; }
+.quizzlestick-answer a:link { background: #ddd; border: none; }
 .quizzlestick-answer a:visited { background: #ddd; }
 .quizzlestick-answer a:hover{ background: #ccc; }
 .quizzlestick-answer a:active { background: #999; color: #fff; }
@@ -189,6 +190,7 @@ ol.quizzlestick-questions {
 
 .quizzlestick-answers .quizzlestick-image-answer a {
 	border-radius: 12px 0 0 12px;
+	border: none;
 	padding: 0;
 }
 
@@ -323,7 +325,7 @@ ol.quizzlestick-questions {
 
 .quizzlestick-result-intro {
 	font-size: 18px;
-	margin: 0 24px;
+	margin: 0;
 	padding: 0 0 24px 0;
 }
 
@@ -431,12 +433,11 @@ a.quizzlestick-finish:hover {
 a.quizzlestick-next {
 	position: relative;
 	background: #ffffff;
-	border: 4px solid #ddd;
-	border-radius: 6px 0 0 6px;
+	border: 0 solid #ddd;
+	border-radius: 7px 0 0 7px;
 }
 
-a.quizzlestick-next:after,
-a.quizzlestick-next:before {
+a.quizzlestick-next:after {
 	left: 100%;
 	top: 50%;
 	border: 0 solid transparent;
@@ -445,6 +446,10 @@ a.quizzlestick-next:before {
 	width: 0;
 	position: absolute;
 	pointer-events: none;
+}
+
+a.quizzlestick-naxt:before {
+	display: none;
 }
 
 a.quizzlestick-next:after {
