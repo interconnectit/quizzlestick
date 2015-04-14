@@ -142,8 +142,8 @@ if ( ! class_exists( 'quizzlestick' ) && class_exists( 'icit_plugin' ) ) {
 				// But the js we *really* need to keep
 				//$prefix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-				wp_register_script( 'quizzlestick', QUIZZLESTICK_URL . "/js/quizzlestick/quizzlestick.js", array( 'jquery' ) );
-				wp_register_script( 'quizzlestick-wp', QUIZZLESTICK_URL . "/js/quizzlestick-wp.js", array( 'quizzlestick' ) );
+				wp_register_script( 'quizzlestick', QUIZZLESTICK_URL . "/js/quizzlestick/quizzlestick.min.js", array( 'jquery' ) );
+				wp_register_script( 'quizzlestick-wp', QUIZZLESTICK_URL . "/js/quizzlestick-wp.min.js", array( 'quizzlestick' ) );
 				wp_localize_script( 'quizzlestick-wp', 'quizzlestickwp', array(
 					'ajaxurl' => admin_url( '/admin-ajax.php' ),
 					'nonce' => wp_create_nonce( 'quizzlestick' . AUTH_SALT )
