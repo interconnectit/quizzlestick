@@ -41,7 +41,7 @@ A new item will appear in the dashboard menu for Quizzes which will allow you to
 
 == Frequently Asked Questions ==
 
-= Is there any limit to the number of quizzes I can create?=
+= Is there any limit to the number of quizzes I can create? =
 As quizzes are a post type, there is no limit to the number of quizzes and they will be displayed in the same way your posts are!
 
 == Changelog ==

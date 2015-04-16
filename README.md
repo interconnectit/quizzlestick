@@ -16,6 +16,7 @@ Quizzes are embedded into posts with a shortcode that is shown in the Embed meta
 ### Installation
 
 To install Quizzlestick:
+
 1. Upload the Quizzlestick folder to the plugins directory */wp-content/plugins/*
 2. Activate the plugin in the 'Plugins' menu in WordPress
 
